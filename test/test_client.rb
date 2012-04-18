@@ -4,24 +4,24 @@ class TestClient < Test::Unit::TestCase
 
   def setup
     @params = {
-      :recipientName => "Alan deLevie",
-      :address1 => "2950 Van Ness St NW Apt 326",
-      :addressTownOrCity => "Washington",
-      :stateOrCounty => "DC",
-      :postalOrZipCode => "20008",
+      :recipientName => "FirstName LastName",
+      :address1 => "123 Anywhere Street",
+      :addressTownOrCity => "San Francisco",
+      :stateOrCounty => "CA",
+      :postalOrZipCode => "94101",
       :country => "USA"
     }
   end
 
   def test_initialize
     c = Pwinty::Client.new
-    request = c.orders(@params)
+    request = c.create_order(@params)
     assert_equal request.class, Weary::Request
   end
 
   def test_headers
     c = Pwinty::Client.new
-    request = c.orders(@params)
+    request = c.create_order(@params)
     resp = request.perform
     assert_equal request.class, Weary::Request
     assert_equal resp.class, Weary::Response
@@ -34,7 +34,7 @@ class TestClient < Test::Unit::TestCase
     c = Pwinty::Client.new
 
     # create Order
-    request = c.orders(@params)
+    request = c.create_order(@params)
     response = request.perform
     body = JSON.parse(response.body)
     keys = %w[ id recipientName
@@ -48,7 +48,8 @@ class TestClient < Test::Unit::TestCase
     puts body.inspect
 
     # add Photo to Order
-    request = c.add_photo(:orderId => id, :type => "4x6", :url => "http://i.imgur.com/xXnrL.jpg", :copies => 1, :sizing => "ShrinkToFit")
+    request = c.add_photo(:orderId => id,   
+                          :type => "4x6", :url => "http://i.imgur.com/xXnrL.jpg", :copies => 1, :sizing => "ShrinkToFit")
     response = request.perform
     body = JSON.parse(response.body)
     puts body.inspect

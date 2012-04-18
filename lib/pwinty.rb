@@ -1,7 +1,19 @@
 require "pwinty/version"
-require 'weary'
+require "weary"
+require "active_attr"
 
 module Pwinty
+
+  def self.client
+    @@client ||= Pwinty::Client.new
+    @@client
+  end
+
+  class Order
+  end
+
+  class Photo
+  end
 
   class Client < Weary::Client
     domain "https://sandbox.pwinty.com"
@@ -9,7 +21,7 @@ module Pwinty
     headers "X-Pwinty-MerchantId" => ENV['PWINTY_MERCHANT_ID'],
     			  "X-Pwinty-REST-API-Key" => ENV['PWINTY_API_KEY']
 
-    post :orders, "/Orders" do |resource|
+    post :create_order, "/Orders" do |resource|
       resource.required :recipientName, :address1, :addressTownOrCity, 
                         :stateOrCounty, :postalOrZipCode, :country
     end
